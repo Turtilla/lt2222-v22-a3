@@ -60,6 +60,34 @@ def create_samples(sampled_lines, sample_number):
                 all_samples.append(full_sample)
             if len(all_samples) == sample_number:
                 return all_samples  
+
+def create_vectors(all_samples):
+    possible_columns = []
+    possible_columns_set = set()
+    for sample in all_samples:
+        characters = sample[0]
+        for character in characters:
+            if character not in possible_columns_set:
+                possible_columns.append(character)
+                possible_columns_set.add(character)
+    possible_columns.append('predicted consonant')
+    
+    random.shuffle(all_samples) 
+    sample_vectors = []
+    for sample in all_samples:
+        characters = sample[0]
+        consonant = sample[1]
+        vector = []
+        for label in possible_columns:
+            if label != 'predicted consonant':
+                if label in characters:
+                    vector.append(1)
+                else:  # if label not in characters
+                    vector.append(0)
+        vector.append(consonant)
+        sample_vectors.append(vector)
+
+    return sample_vectors
           
 def split_samples(all_samples, test_percent):
     cutoff = math.ceil(len(all_samples) * (test_percent / 100))
@@ -75,9 +103,11 @@ def save_samples(test_set, train_set, test_file, train_file):
 
 
 if __name__ == "__main__":
+
     lines = sample_lines(args.input_file, args.samples)
     full_samples = create_samples(lines, args.samples)
-    test_set, train_set = split_samples(full_samples, args.split)
+    sample_vectors = create_vectors(full_samples)
+    test_set, train_set = split_samples(sample_vectors, args.split)
     save_samples(test_set, train_set, args.test_file, args.train_file)
 
 
