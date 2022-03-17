@@ -2,11 +2,14 @@ import argparse
 import gzip
 import random
 import math
+import pickle
 
 parser = argparse.ArgumentParser()
-parser.add_argument("file", help="the file you want to make the samples out of (.txt or .gzip)")
+parser.add_argument("input_file", help="the file you want to make the samples out of (.txt or .gzip)")
 parser.add_argument("samples", help="the number of samples that you want to produce", type=int)
 parser.add_argument("split", help="the percentage of the samples that will form the test set (e.g. entering 20 here will produce a 20/80 test/train split)", type=int)
+parser.add_argument("test_file", help="the file you want to save the test samples to")
+parser.add_argument("train_file", help="the file you want to save the training samples to")
 
 args = parser.parse_args()
 
@@ -64,10 +67,17 @@ def split_samples(all_samples, test_percent):
     train_set = all_samples[cutoff:]
     return test_set, train_set
 
-if __name__ == "__main__":
+def save_samples(test_set, train_set, test_file, train_file):
+    with open(test_file, 'wb') as testing_file:
+        pickle.dump(test_set, testing_file)
+    with open(train_file, 'wb') as training_file:
+        pickle.dump(train_set, training_file)
 
-    lines = sample_lines(args.file, args.samples)
+
+if __name__ == "__main__":
+    lines = sample_lines(args.input_file, args.samples)
     full_samples = create_samples(lines, args.samples)
     test_set, train_set = split_samples(full_samples, args.split)
-    print(test_set)
-    print(train_set)
+    save_samples(test_set, train_set, args.test_file, args.train_file)
+
+
