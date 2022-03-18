@@ -5,6 +5,7 @@ from sklearn.naive_bayes import CategoricalNB
 import numpy as np
 import pandas as pd
 import sklearn.metrics as skm
+import random
 
 parser = argparse.ArgumentParser()
 parser.add_argument("model_file", help="the file you want to import the model from")
@@ -21,9 +22,27 @@ def import_testing_data(filename):
 
 def import_model(filename):
     with open(filename, 'rb') as model_file:
-        model = pickle.load(model_file)
+        model, possible_columns = pickle.load(model_file)
 
-    return model
+    return model, possible_columns
+
+def create_vectors(all_samples, possible_columns):
+    random.shuffle(all_samples) 
+    sample_vectors = []
+    for sample in all_samples:
+        characters = sample[0]
+        consonant = sample[1]
+        vector = []
+        for label in possible_columns:
+            if label != 'predicted consonant':
+                if label in characters:
+                    vector.append(1)
+                else:  # if label not in characters
+                    vector.append(0)
+        vector.append(consonant)
+        sample_vectors.append(vector)
+
+    return sample_vectors
 
 def create_df(sample_vectors):
 
@@ -53,8 +72,11 @@ def eval_model(model, test_X, test_y, average_type):
     print(f"For the model {model} the following scores were obtained with {average_type}-averaging (wherever applicable): \n\taccuracy = {accuracy} \n\tprecision = {precision} \n\trecall = {recall} \n\tf1 score = {f1}")
 
 if __name__ == "__main__":
-    model = import_model(args.model_file)
+    model, possible_columns = import_model(args.model_file)
     test_samples = import_testing_data(args.test_file)
-    data_frame = create_df(test_samples)
+    test_vectors = create_vectors(test_samples, possible_columns)
+    data_frame = create_df(test_vectors)
     test_X, test_y = split_samples(data_frame)
     eval_model(model, test_X, test_y, args.average_type)
+
+    print(len(possible_columns))

@@ -15,7 +15,7 @@ args = parser.parse_args()
 
 consonants_set = set(['b', 'c', 'd', 'f', 'g', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 's', 't', 'v', 'x', 'y', 'z', 'h', 'r', 't', 'w', 'y'])
 
-def sample_lines(filename, lines):
+def sample_lines(filename):
     if filename.endswith(".gz"):
         unzipped_file = gzip.open(filename, "rb")
         lines = unzipped_file.readlines()
@@ -61,7 +61,7 @@ def create_samples(sampled_lines, sample_number):
             if len(all_samples) == sample_number:
                 return all_samples  
 
-def create_vectors(all_samples):
+def create_columns(all_samples):
     possible_columns = []
     possible_columns_set = set()
     for sample in all_samples:
@@ -72,42 +72,27 @@ def create_vectors(all_samples):
                 possible_columns_set.add(character)
     possible_columns.append('predicted consonant')
     
-    random.shuffle(all_samples) 
-    sample_vectors = []
-    for sample in all_samples:
-        characters = sample[0]
-        consonant = sample[1]
-        vector = []
-        for label in possible_columns:
-            if label != 'predicted consonant':
-                if label in characters:
-                    vector.append(1)
-                else:  # if label not in characters
-                    vector.append(0)
-        vector.append(consonant)
-        sample_vectors.append(vector)
+    return possible_columns
 
-    return sample_vectors
-          
 def split_samples(all_samples, test_percent):
     cutoff = math.ceil(len(all_samples) * (test_percent / 100))
     test_set = all_samples[:cutoff]
     train_set = all_samples[cutoff:]
     return test_set, train_set
 
-def save_samples(test_set, train_set, test_file, train_file):
+def save_samples(test_set, train_set, possible_columns, test_file, train_file):
     with open(test_file, 'wb') as testing_file:
         pickle.dump(test_set, testing_file)
     with open(train_file, 'wb') as training_file:
-        pickle.dump(train_set, training_file)
+        pickle.dump((train_set, possible_columns), training_file)
 
 
 if __name__ == "__main__":
 
-    lines = sample_lines(args.input_file, args.samples)
+    lines = sample_lines(args.input_file)
     full_samples = create_samples(lines, args.samples)
-    sample_vectors = create_vectors(full_samples)
-    test_set, train_set = split_samples(sample_vectors, args.split)
-    save_samples(test_set, train_set, args.test_file, args.train_file)
+    possible_columns = create_columns(full_samples)
+    test_set, train_set = split_samples(full_samples, args.split)
+    save_samples(test_set, train_set, possible_columns, args.test_file, args.train_file)
 
 
