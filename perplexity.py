@@ -114,16 +114,22 @@ def retrieve_correct_probs(model, test_X, test_y):
             if classes[j] == correct_ans:
                 correct_prob = probs[j]
                 correct_probs.append(correct_prob)
+            if correct_ans not in classes:  # if there is no probability for the correct answer according to the model
+                correct_prob = 1/len(test_y)  # accounting for 0 probabilities
+                correct_prob_log = math.log(correct_prob)
+                correct_probs.append(correct_prob_log)
+
     return correct_probs
 
 def perplexity(model, test_X, test_y):
     correct_probs = retrieve_correct_probs(model, test_X, test_y)
-    sample_number = len(test_X)
-    base = 2
-    exponent = -(1/sample_number)*(sum(correct_probs))
-    pp = math.pow(base, exponent)
-
-    return pp
+    if len(correct_probs) != len(test_y):
+        return "inf"
+    else:
+        sample_number = len(test_X)
+        exponent = -(1/sample_number)*(sum(correct_probs))
+        pp = np.exp(exponent)  # because scikit has all the log probabilities in base e, the formula for that is from here https://stats.stackexchange.com/questions/10302/what-is-perplexity
+        return pp
 
 
 

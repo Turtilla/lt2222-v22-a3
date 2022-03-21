@@ -37,15 +37,6 @@ def create_vectors(all_samples, possible_columns):
         vector.append(consonant)
         sample_vectors.append(vector)
 
-    ### potential padding?
-    for consonant in consonants_set:
-        vector = []
-        for label in possible_columns:
-            if label != 'predicted consonant':
-                vector.append(0)
-        vector.append(consonant)
-        sample_vectors.append(vector)
-
     return sample_vectors
 
 def create_df(sample_vectors):
