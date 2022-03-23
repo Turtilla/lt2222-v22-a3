@@ -87,9 +87,11 @@ trend of "the bigger the training sample size, the better the model" show that i
 the 100 sample size for SVC or the relatively lower one for 50000 samples for the same type of model) are just lucky or unlucky flukes depending on what was there in the samples (which were randomly selected).
 Perplexity shows that small sample sizes do not make for good NB models, but the bigger the sample size, the lower the perplexity, without exceptions. The same cannot be said for SVC, where the perplexity for the
 biggest sample size model was higher than the preceding one. All in all though, every SVC model had lower perplexity than even the best NB model.  
+ 
 Looking once more at the evaluation measures, we can conclude rather safely that this kind of a problem is not easy to model or predict, and 4 characters in a row are not a good predictor for what consonant comes
 next. Even when trained on big sample sizes the models show low evaluation measures, at best oscillating around 30%; the exception is the lucky 45% on a very small training and testing sample, but this is likely
-just due to lucky data distribution. Both models seem to learn better with bigger sample sizes, with SVC being overall better at this particular task. 
+just due to lucky data distribution. Both models seem to learn better with bigger sample sizes, with SVC being overall better at this particular task.  
+ 
 Hopefully this experimentation and discussion is sufficient for this assignment. The sample files (test_XYZ.pickle and train_XYZ.pickle) and model files (model_XYZ_SVC/NB.pickle) will be uploaded to the repo 
 together with the scripts and this discussion.
 
