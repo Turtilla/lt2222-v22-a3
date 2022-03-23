@@ -1,4 +1,4 @@
-### EXPLORE AND EXPERIMENT
+# EXPLORE AND EXPERIMENT
 Written by Maria Irena Szawerna 23.03.2022 for LT2222 V22  
 
 ## The technicalities
@@ -20,7 +20,7 @@ I trained both models - SVM/SVC and MultinomialNB - using train.py on every coll
 bigger the sample size was. 
 ## Step 3
 Using test.py I obtained evaluation measures for each of the models using the respective test sample sets, both with micro- and macro-averaging. The results can be seen in in the tables below:
-# 100 samples
+### 100 samples
 | Measure | sklearn's MultinomialNB | sklearn's SVC with a linear kernel |
 | ----------- | ----------------------- | ---------------------------------- |
 | accuracy | 0.15 | 0.45 |
@@ -30,7 +30,7 @@ Using test.py I obtained evaluation measures for each of the models using the re
 | macro recall | ~0.07 | ~0.24 |
 | micro f1 score | 0.15 | 0.45 |
 | macro f1 score | ~0.08 | ~0.20 |
-# 1000 samples
+### 1000 samples
 | Measure | sklearn's MultinomialNB | sklearn's SVC with a linear kernel |
 | ----------- | ----------------------- | ---------------------------------- |
 | accuracy | 0.05 | 0.18 |
@@ -40,7 +40,7 @@ Using test.py I obtained evaluation measures for each of the models using the re
 | macro recall | ~0.07 | ~0.12 |
 | micro f1 score | 0.05 | 0.18 |
 | macro f1 score | ~0.02 | ~0.11 |
-# 10000 samples
+### 10000 samples
 | Measure | sklearn's MultinomialNB | sklearn's SVC with a linear kernel |
 | ----------- | ----------------------- | ---------------------------------- |
 | accuracy | ~0.11 | ~0.30 |
@@ -50,7 +50,7 @@ Using test.py I obtained evaluation measures for each of the models using the re
 | macro recall | ~0.07 | ~0.15 |
 | micro f1 score | ~0.11 | ~0.30 |
 | macro f1 score | ~0.05 | ~0.15 |
-# 25000 samples
+### 25000 samples
 | Measure | sklearn's MultinomialNB | sklearn's SVC with a linear kernel |
 | ----------- | ----------------------- | ---------------------------------- |
 | accuracy | ~0.10 | ~0.35 |
@@ -60,7 +60,7 @@ Using test.py I obtained evaluation measures for each of the models using the re
 | macro recall | ~0.09 | ~0.24 |
 | micro f1 score | ~0.10 | ~0.35 |
 | macro f1 score | ~0.04 | ~0.27 |
-# 50000 samples
+### 50000 samples
 | Measure | sklearn's MultinomialNB | sklearn's SVC with a linear kernel |
 | ----------- | ----------------------- | ---------------------------------- |
 | accuracy | ~0.10 | ~0.28 |
