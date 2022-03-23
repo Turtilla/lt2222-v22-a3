@@ -5,7 +5,7 @@ Written by Maria Irena Szawerna 23.03.2022 for LT2222 V22
 This is the report for Assignment 3 in the Introduction to Machine Learning course. Its aim is to report my experimentation and findings with the scripts that I constructed to try to predict the next consonant 
 based on four characters (including letters, numbers, punctuation, whitespace, etc.) in a row. The scripts make use of two classification models, a support vector machine with a linear kernel and a multinomial
 Naive Bayes classifier, both from scikit learn. The data on which the experimentation is done comes from a file that was shared with us containing UN speeches.  
-## Step 1
+## Step 1: obtaining the samples
 As a preparation for this discussion I unzipped the file and split it into two parts: UN-english-sample.txt and UN-english-pp.txt. The first one was used to construct all of the samples, while the second one
 served as a text to test the system perplexity on (so it was important that none of the models were trained on it, hence it being split). I used sample.py to prepare training and testing files for a number of
 different sample sizes, with the train/test split at 80/20. I prepared samples of the following sizes:  
@@ -15,10 +15,10 @@ different sample sizes, with the train/test split at 80/20. I prepared samples o
 + 25000 samples
 + 50000 samples  
 Any larger samples sizes made the SVM model's learning time longer than the recommended maximum of 1h. Each of these sets of samples were split into two files, a training one and a testing one.
-## Step 2
+## Step 2: training the models
 I trained both models - SVM/SVC and MultinomialNB - using train.py on every collection of samples obtained in the previous step. Naive Bayes models seemed to take equally long to train, while SVC took longer the 
 bigger the sample size was. 
-## Step 3
+## Step 3: evaluating the models
 Using test.py I obtained evaluation measures for each of the models using the respective test sample sets, both with micro- and macro-averaging. The results can be seen in in the tables below:
 ### 100 samples
 | Measure | sklearn's MultinomialNB | sklearn's SVC with a linear kernel |
@@ -70,7 +70,7 @@ Using test.py I obtained evaluation measures for each of the models using the re
 | macro recall | ~0.07 | ~0.17 |
 | micro f1 score | ~0.10 | ~0.28 |
 | macro f1 score | ~0.04 | ~0.18 |
-## Step 4
+## Step 4: perplexity
 Using perplexity.py I tested each model on the same UN-english-pp.txt file (the first 1000 lines of the original file) to get comparable perplexity scores. It is important to note that this part was more tricky
 than expected, as sklearn's models output probabilities in ln, not log2, so they needed to be recalculated. In addition, the originally used CategoricalNB was throwing errors when encountering UNK tokens, which
 is why I received permission to use MultinomialNB which did not do that. The results can be found in the table below:
