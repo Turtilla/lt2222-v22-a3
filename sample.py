@@ -1,13 +1,15 @@
-'''This script was written by Maria Szawerna for the LT2222 V22 Machine Learning course at the University of Gothenburg between 16 and 21.03.2022
+'''This script was written by Maria Szawerna for the LT2222 V22 Machine Learning course at the University of Gothenburg between 16 and 23.03.2022
     It is intended to be run from the command line together with 5 command line arguments: the name of or path to the input file, the desired number
     of samples, the cut-off point for the test/train split of the data, the name of the file to save the test data to, and the name of the file to
-    save the training data and the names of the columns to; nevertheless, the functions and some variables can be imported into other scripts on their own.'''
+    save the training data and the names of the columns to; nevertheless, the functions and some variables can be imported into other scripts on their own.
+    Requires a specially formatted file with text.'''
 
 import argparse
 import gzip
 import random
 import math
 import pickle
+import itertools
 
 parser = argparse.ArgumentParser()
 parser.add_argument("input_file", help="the file you want to make the samples out of (.txt or .gzip)")
@@ -20,6 +22,11 @@ args = parser.parse_args()
 
 # the set of all the characters that will be predicted for - or, in other words, the classes
 consonants_set = set(['b', 'c', 'd', 'f', 'g', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 's', 't', 'v', 'x', 'y', 'z', 'h', 'r', 't', 'w', 'y'])
+# according to https://www.uopeople.edu/blog/punctuation-marks/#:~:text=There%20are%2014%20punctuation%20marks,%2C%20quotation%20mark%2C%20and%20ellipsis and the non-alphabetic symbols that
+# I have on my keyboard; by no means exhaustive, but is intended to serve as a baseline to exclude non-English characters
+alphabet_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', ' ', ',', '.', '?', 
+                    '!', '-', '\;', ':', '/', '\'', '\\', '(', ')', '[', ']', '{', '}', '\"', '@', '#', '$', '%', '&', '*', '_', '<', '>', '+', '0', '1', '2', '3', '4', '5',
+                    '6', '7', '8', '9']
 
 def sample_lines(filename):
     # this function detects what kind of file is fed into it and how to open it, quits the script if the extension is not supported; it returns the file as a list where every element is a line from the file
@@ -71,18 +78,20 @@ def create_samples(sampled_lines, sample_number):
             if len(all_samples) == sample_number:
                 return all_samples  
 
-def create_columns(all_samples):
-    # this function creates a list of possible columns or classes for future reference (given how the vectors are created based only on the characters and positions that appear in the initial data,
-    # and not all the possible combinations). Returns an ordered list representing the columns of the upcoming dataframe
+def create_columns(alphabet_list):
+    # this function creates a list of possible columns or classes for future reference, as all the possible combinations of our alphabet and the four potential positions. 
+    # Returns an ordered list representing the columns of the upcoming array, or all the possible entries in the respective columns for NB and its OrdinalEncoder.
     possible_columns = []
-    possible_columns_set = set()
-    for sample in all_samples:
-        characters = sample[0]
-        for character in characters:
-            if character not in possible_columns_set:
-                possible_columns.append(character)
-                possible_columns_set.add(character)
-    possible_columns.append('predicted consonant')
+    positions = ['_1', '_2', '_3', '_4']
+    possible_combos = list(itertools.product(alphabet_list, positions))
+
+    for combo in possible_combos:
+        character = combo[0]
+        position = combo[1]
+        combined = character + position
+        possible_columns.append(combined)
+
+    possible_columns.append('predicted_consonant')
     
     return possible_columns
 
@@ -106,7 +115,7 @@ if __name__ == "__main__":
     # all of the necessary arguments are obtained from the command line using argparse
     lines = sample_lines(args.input_file)
     full_samples = create_samples(lines, args.samples)
-    possible_columns = create_columns(full_samples)
+    possible_columns = create_columns(alphabet_list)
     test_set, train_set = split_samples(full_samples, args.split)
     save_samples(test_set, train_set, possible_columns, args.test_file, args.train_file)
     print("Sampling finished successfully.")
